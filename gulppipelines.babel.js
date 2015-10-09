@@ -4,6 +4,7 @@ const $ = gulpLoadPlugins();
 export default {
   'js': () => [
     $.sourcemaps.init(),
+    $.babel(),
     $.uglify(),
     $.sourcemaps.write('.')
   ],

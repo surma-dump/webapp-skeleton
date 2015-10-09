@@ -6,6 +6,7 @@
     "babel-core": "^5.8.25",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.0.2",
+    "gulp-babel": "^5.2.1",
     "gulp-imagemin": "^2.3.0",
     "gulp-load-plugins": "^0.10.0",
     "gulp-minify-css": "^1.2.1",

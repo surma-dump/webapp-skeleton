@@ -13,9 +13,7 @@ const everythingElseGlob = [
   'app/**/*',
   ...Object.keys(pipelines)
     .map(extension => '!app/**/*.' + extension),
-  'bower_components/**/*',
-  ...Object.keys(pipelines)
-    .map(extension => '!bower_components/**/*.' + extension)
+  'bower?components/**/*'
 ];
 
 const defaultBsConfig = {
@@ -52,8 +50,7 @@ gulp.task('serve:dist', ['build'], () => {
 
   Object.keys(pipelines).forEach(extension => {
     gulp.watch([
-      'app/**/*.' + extension,
-      'bower_components/**/*.' + extension
+      'app/**/*.' + extension
     ], [extension, bs.reload]);
   });
   gulp.watch(everythingElseGlob, ['everything-else', bs.reload]);
@@ -67,8 +64,7 @@ gulp.task('build', [...Object.keys(pipelines), 'everything-else']);
 Object.keys(pipelines).forEach(extension => {
   gulp.task(extension, () => {
     var stream = gulp.src([
-      'app/**/*.' + extension,
-      'bower_components/**/*.' + extension
+      'app/**/*.' + extension
     ]);
     stream = pipelines[extension]()
       .reduce((stream, pipe) => stream.pipe(pipe), stream);
