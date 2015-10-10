@@ -1,7 +1,8 @@
 import {default as Moment} from 'bower_components/moment/min/moment.min';
-import {birthday} from 'modules/birthday';
+import {default as importantDate} from 'modules/important-date';
 
-document.querySelector('#birthday').textContent = Moment(birthday).fromNow();
+document.querySelector('#birthday').textContent =
+  Moment(importantDate).fromNow();
 
 import {default as cssLoader} from 'modules/defer-css';
 cssLoader();
