@@ -11,10 +11,19 @@ export default {
     $.uglify(),
     $.sourcemaps.write('.')
   ],
+  '{sass,scss}': () => [
+    $.sourcemaps.init(),
+    $.sass({
+      precision: 10
+    }).on('error', $.sass.logError),
+    $.autoprefixer({browsers: ['last 2 versions']}),
+    $.minifyCss(),
+    $.sourcemaps.write('.')
+  ],
   'css': () => [
     $.sourcemaps.init(),
     $.autoprefixer({browsers: ['last 2 versions']}),
-    $.uglify(),
+    $.minifyCss(),
     $.sourcemaps.write('.')
   ],
   'html': () => [
