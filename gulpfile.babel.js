@@ -22,25 +22,8 @@ const defaultBsConfig = {
   open: false
 };
 
-// Serve app directory with mounted bower components
-gulp.task('serve', () => {
-  const options = Object.assign({}, defaultBsConfig, {
-    server: {
-      baseDir: 'app',
-      routes: {
-        '/bower_components': 'bower_components'
-      }
-    }
-  });
-  bs.init(options);
-  gulp.watch([
-    'app/**/*',
-    'bower_components/**/*'
-  ]).on('change', bs.reload);
-});
-
 // Serve the built app
-gulp.task('serve:dist', ['build'], () => {
+gulp.task('serve', ['build'], () => {
   const options = Object.assign({}, defaultBsConfig, {
     server: {
       baseDir: 'dist'

@@ -5,6 +5,7 @@ export default {
   'js': () => [
     $.sourcemaps.init(),
     $.babel({
+      // Use AMD for RequireJS
       modules: 'amd'
     }),
     $.uglify(),
