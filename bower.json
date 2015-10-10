@@ -10,7 +10,6 @@
     "tests"
   ],
   "dependencies": {
-    "requirejs": "~2.1.20",
     "moment": "~2.10.6"
   }
 }

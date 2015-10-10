@@ -4,10 +4,13 @@ const $ = gulpLoadPlugins();
 export default {
   'js': () => [
     $.sourcemaps.init(),
-    $.babel({
-      // Use AMD for RequireJS
-      modules: 'amd'
-    }),
+    // Don't bablify vendor scripts
+    $.if(file => !/^vendor\//.test(file.relative),
+      $.babel({
+        // Use AMD for RequireJS
+        modules: 'amd'
+      })
+    ),
     $.uglify(),
     $.sourcemaps.write('.')
   ],
