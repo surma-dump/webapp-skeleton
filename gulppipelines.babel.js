@@ -30,6 +30,7 @@ export default {
     $.sourcemaps.write('.')
   ],
   'html': () => [
+    $.minifyInline(),
     $.minifyHtml()
   ],
   '{png,jpeg,jpg}': () => [
