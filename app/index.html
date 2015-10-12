@@ -29,7 +29,16 @@
 
     <meta name="theme-color" content="#3372DF">
 
-    <link rel="stylesheet-defer" href="styles/main.css">
+    <!-- lazy-loaded styles -->
+    <noscript class="lazyload">
+      <link rel="stylesheet" href="styles/main.css">
+    </noscript>
+
+    <!-- Styles for First Render -->
+    <style>
+    </style>
+
+    <!-- module loader -->
     <script>
     var require = {
       baseUrl: './',
@@ -38,9 +47,6 @@
     </script>
     <script src="nobabel/requirejs/require.js" data-main="main.js" defer></script>
 
-    <!-- Styles for First Render -->
-    <style>
-    </style>
   </head>
   <body>
     That important date is <span id="birthday"></span>.
