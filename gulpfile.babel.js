@@ -53,7 +53,7 @@ Object.keys(pipelines).forEach(extension => {
     var stream = gulp.src([
       'app/**/*.' + extension
     ]);
-    pipeline.reduce((stream, step) => stream.pipe(step), stream);
+    stream = pipeline.reduce((stream, step) => stream.pipe(step), stream);
     return stream.pipe(gulp.dest('dist'));
   });
 });
