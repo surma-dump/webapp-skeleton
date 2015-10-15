@@ -11,7 +11,11 @@ export default {
         modules: 'amd'
       })
     ),
-    $.uglify(),
+    $.uglify({
+      mangle: {
+        except: ['$', 'require', 'exports']
+      }
+    }),
     $.sourcemaps.write('.')
   ],
   '{sass,scss}': () => [
