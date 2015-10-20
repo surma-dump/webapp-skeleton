@@ -23,7 +23,19 @@ $ gulp serve
 ```
 
 to build `dist`, run a (HTTP/1!) web server for local development and
- watch for changes to rebuild automatically.
+watch for changes to rebuild automatically.
+
+# Remove example code
+
+To have a vanilla basis without any of the example code, run
+
+```
+bower uninstall --save moment
+echo > app/styles/main.scss
+sed -i .bak '1,6d' app/main.js
+sed -i .bak '52,57d' app/index.html
+rm app/modules/important-date.js app/*.bak
+```
 
 # ES2015
 
