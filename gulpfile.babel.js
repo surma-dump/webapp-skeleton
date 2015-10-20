@@ -1,7 +1,5 @@
 import gulp from 'gulp';
 import browserSync from 'browser-sync';
-import pkg from './package.json';
-
 
 // Pipelines for each file extension
 import pipelines from './gulppipelines.babel.js';

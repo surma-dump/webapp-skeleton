@@ -1,4 +1,5 @@
 import gulpLoadPlugins from 'gulp-load-plugins';
+import pkg from './package.json';
 const $ = gulpLoadPlugins();
 
 export default {
@@ -34,6 +35,7 @@ export default {
     $.sourcemaps.write('.')
   ],
   'html': () => [
+    $.replace('{{_!_version_!_}}', pkg.version),
     $.minifyInline(),
     $.minifyHtml()
   ],
