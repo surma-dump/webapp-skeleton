@@ -31,9 +31,9 @@ To have a vanilla basis without any of the example code, run
 
 ```
 bower uninstall --save moment
-echo > app/styles/main.scss
-sed -i .bak '1,6d' app/main.js
-sed -i .bak '52,57d' app/index.html
+echo | tee app/styles/main.scss
+sed --in-place=.bak '1,6d' app/main.js
+sed --in-place=.bak '52,57d' app/index.html
 rm app/modules/important-date.js app/*.bak
 ```
 
