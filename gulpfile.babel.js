@@ -1,47 +1,16 @@
-// Generate tasks for each file extension
-import pipelines from './gulppipelines.babel.js';
-const handledExtensions = {};
-Object.keys(pipelines).forEach(extension => {
-  handledExtensions[extension] = () => {
-    // Instantiate pipeline
-    const pipeline = pipelines[extension]();
+import gfd from './gfd';
+import commonTasks from './gfd/common-tasks';
 
-    var stream = gulp.src([
-      'app/**/*.' + extension
-    ]);
-    stream = pipeline.reduce((stream, step) => stream.pipe(step), stream);
-    return stream.pipe(gulp.dest('dist'));
-  };
+gfd.appFiles().withExtension('json', 'html');
+gfd.bowerFiles().inFolder('moment').inFolder('src').withName('moment.js').run(commonTasks.minifyJs());
 
-  gulp.task(extension, handledExtensions[extension]);
-});
-
-import gulp from 'gulp';
-gulp.task('build', gulp.series(
-  ...Object.keys(handledExtensions),
-  unhandledFiles));
-gulp.task('serve', gulp.series('build', serve));
+gulp.task('build', gfd.buildTask());
 gulp.task('default', gulp.series('build'));
 
-// Glob pattern that matches every file not handled by
-// the pipelines defined in `buldingPipelines`
-const unhandledFilesGlob = [
-  'app/**/*',
-  ...Object.keys(pipelines)
-    .map(extension => '!app/**/*.' + extension),
-  'bower?components/**/*'
-];
-
-// Just copy all the files not explicitly processed in `pipelines`
-function unhandledFiles() {
-  return gulp.src(unhandledFilesGlob, {
-    dot: true
-  })
-  .pipe(gulp.dest('dist'));
-};
+import gulp from 'gulp';
+gulp.task('serve', gulp.series('build', serve));
 
 import browserSync from 'browser-sync';
-
 const defaultBrowserSyncConfig = {
   reloadOnRestart: true,
   open: false
