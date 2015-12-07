@@ -66,35 +66,52 @@ StreamWrapper.prototype.run = function(task) {
   return task(this);
 };
 
+var eatStream = through.obj(function(file, enc, cb) {
+  cb(null);
+});
+
+StreamWrapper.prototype.put = function(dest) {
+  var newDest = path.join(config.destDir, dest);
+  this.stream = this.stream
+    .pipe(gulp.dest(newDest))
+    .pipe(eatStream);
+  return this;
+};
+
+var config = {
+  appDir: 'app',
+  destDir: 'dist',
+  moduleDir: 'node_modules',
+  bowerDir: 'bower_components'
+};
+
 module.exports = {
-  config: {
-    appDir: 'app',
-    destDir: 'dist',
-    moduleDir: 'node_modules',
-    bowerDir: 'bower_components'
+  config: function(cfg) {
+    config = Object.assign(config, cfg);
+    return config;
   },
   pipes: [],
   appFiles: function() {
-    var newStream = new StreamWrapper(this.config.appDir);
+    var newStream = new StreamWrapper(config.appDir);
     this.pipes.push(newStream);
     return newStream;
   },
   moduleFiles: function() {
-    var newStream = new StreamWrapper(this.config.moduleDir);
+    var newStream = new StreamWrapper(config.moduleDir);
     this.pipes.push(newStream);
     return newStream;
   },
   bowerFiles: function() {
-    var newStream = new StreamWrapper(this.config.bowerDir);
+    var newStream = new StreamWrapper(config.bowerDir);
     this.pipes.push(newStream);
     return newStream;
   },
   buildTask: function() {
     return function() {
       var pipes = this.pipes.map(function(task) {
-        return task.stream.pipe(gulp.dest(this.config.destDir));
+        return task.stream.pipe(gulp.dest(config.destDir));
       }.bind(this));
-      return merge.apply(null, pipes);
+      return merge(pipes);
     }.bind(this);
   }
 };

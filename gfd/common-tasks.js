@@ -32,5 +32,13 @@ module.exports = {
     return function(task) {
       return task.runGulp(babel(opts));
     }
+  },
+  log: function(prefix) {
+    return function(task) {
+      return task.filter(function(file) {
+        console.log(prefix+':', file.relative, '(' + file.path + ')');
+        return true;
+      });
+    }
   }
 };
