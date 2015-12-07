@@ -1,4 +1,4 @@
-import Moment from 'bower_components/moment/min/moment.min';
+import Moment from 'vendor/moment/moment.min';
 import importantDate from 'modules/important-date';
 
 document.querySelector('#birthday').textContent =
