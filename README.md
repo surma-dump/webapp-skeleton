@@ -34,7 +34,8 @@ bower uninstall --save moment
 echo | tee app/styles/main.scss
 sed --in-place=.bak '1,6d' app/main.js
 sed --in-place=.bak '52,57d' app/index.html
-rm app/modules/important-date.js app/*.bak
+sed --in-place=.bak '35,39d' gulpfile.babel.js
+rm app/modules/important-date.js app/*.bak *.bak
 ```
 
 # ES2015
