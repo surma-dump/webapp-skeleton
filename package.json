@@ -1,6 +1,6 @@
 {
-  "name": "http2-skeleton",
-  "version": "0.0.0",
+  "name": "webapp-skeleton",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "babel-core": "^6.3.15",
