@@ -62,7 +62,11 @@ StreamWrapper.prototype.runGulp = function(gulpTask) {
   return this;
 };
 
-StreamWrapper.prototype.run = function(task) {
+StreamWrapper.prototype.run = function(task, opts) {
+  opts = opts || {};
+  if(opts.skip) {
+    return this;
+  }
   return task(this);
 };
 
