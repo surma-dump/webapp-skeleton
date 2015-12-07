@@ -4,6 +4,14 @@ import pkg from './package.json';
 import commonTasks from './gfd/common-tasks';
 import serve from './gulp/serve';
 
+// This call just shows off the default values
+gfd.config({
+  appDir: 'app',
+  destDir: 'dist',
+  moduleDir: 'node_modules',
+  bowerDir: 'bower_components'
+});
+
 gfd.appFiles()
   .withExtension('js')
   .noMatch(/^nobabel\//)
