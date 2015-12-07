@@ -28,7 +28,7 @@ gfd.appFiles()
 gfd.appFiles()
   .withExtension('html')
   .run(commonTasks.replace('{{_!_version_!_}}', pkg.version))
-  .run(commonTasks.minifyHtml());
+  .run(commonTasks.minifyHtml())
 gfd.appFiles()
   .withExtension('jpeg', 'jpg', 'png', 'svg')
   .run(commonTasks.imagemin());

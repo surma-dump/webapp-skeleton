@@ -7,59 +7,44 @@ var babel = require('gulp-babel');
 var autoprefixer = require('gulp-autoprefixer');
 var replace = require('gulp-replace');
 var imagemin = require('gulp-imagemin');
+var through = require('through2')
+var streamCombiner = require('stream-combiner');
 
 module.exports = {
   compileSass: function(opts) {
-    return function(task) {
-      return task.runGulp(sass(opts));
-    };
+    return sass(opts);
   },
   autoprefixer: function(opts) {
-    return function(task) {
-      return task.runGulp(autoprefixer(opts));
-    };
+    return autoprefixer(opts);
   },
   minifyCss: function(opts) {
-    return function(task) {
-      return task.runGulp(minifyCss(opts));
-    };
+    return minifyCss(opts);
   },
   minifyJs: function(opts) {
-    return function(task) {
-      return task.runGulp(uglify(opts));
-    };
+    return uglify(opts);
   },
   minifyHtml: function(opts) {
     if(typeof opts === 'undefined') {
       opts = {html: {}, inline: {}};
     }
-    return function(task) {
-      return task
-        .runGulp(minifyHtml(opts.html || {}))
-        .runGulp(minifyInline(opts.inline || {}));
-    };
+    return streamCombiner(
+      minifyHtml(opts.html || {}),
+      minifyInline(opts.inline || {})
+    );
   },
   imagemin: function(opts) {
-    return function(task) {
-      return task.runGulp(imagemin(opts));
-    };
+    return imagemin(opts);
   },
   babel: function(opts) {
-    return function(task) {
-      return task.runGulp(babel(opts));
-    };
+    return babel(opts);
   },
   replace: function(needle, haystack) {
-    return function(task) {
-      return task.runGulp(replace(needle, haystack));
-    };
+    return replace(needle, haystack);
   },
   log: function(prefix) {
-    return function(task) {
-      return task.filter(function(file) {
-        console.log(prefix+':', file.relative, '(' + file.path + ')');
-        return true;
-      });
-    }
+    return through.obj(function(file, enc, cb) {
+      console.log(prefix+':', file.relative, '(' + file.path + ')');
+      cb(null, file);
+    });
   }
 };

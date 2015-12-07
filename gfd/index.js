@@ -57,17 +57,14 @@ StreamWrapper.prototype.inFolder = function(name) {
   });
 };
 
-StreamWrapper.prototype.runGulp = function(gulpTask) {
-  this.stream = this.stream.pipe(gulpTask);
-  return this;
-};
-
 StreamWrapper.prototype.run = function(task, opts) {
   opts = opts || {};
   if(opts.skip) {
     return this;
   }
-  return task(this);
+
+  this.stream = this.stream.pipe(task);
+  return this;
 };
 
 var eatStream = through.obj(function(file, enc, cb) {
