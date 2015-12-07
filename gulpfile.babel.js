@@ -1,8 +1,12 @@
 import gfd from './gfd';
 import commonTasks from './gfd/common-tasks';
 
-gfd.appFiles().withExtension('json', 'html');
-gfd.bowerFiles().inFolder('moment').inFolder('src').withName('moment.js').run(commonTasks.minifyJs());
+gfd.appFiles()
+  .withExtension('json', 'html');
+gfd.bowerFiles()
+  .inFolder('moment/min')
+  .withName('moment.min.js')
+  .run(commonTasks.minifyJs());
 
 gulp.task('build', gfd.buildTask());
 gulp.task('default', gulp.series('build'));

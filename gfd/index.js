@@ -63,8 +63,7 @@ StreamWrapper.prototype.runGulp = function(gulpTask) {
 };
 
 StreamWrapper.prototype.run = function(task) {
-  this.stream = task(this);
-  return this;
+  return task(this);
 };
 
 module.exports = {
