@@ -4,15 +4,16 @@ import pkg from './package.json';
 import commonTasks from './gfd/common-tasks';
 import serve from './gulp/serve';
 
+var g = gfd();
 // This call just shows off the default values
-gfd.config({
+g.config({
   appDir: 'app',
   destDir: 'dist',
   moduleDir: 'node_modules',
   bowerDir: 'bower_components'
 });
 
-gfd.appFiles()
+g.appFiles()
   .withExtension('js')
   .noMatch(/^nobabel\//)
   .run(commonTasks.babel({
@@ -20,32 +21,32 @@ gfd.appFiles()
     plugins: ['transform-es2015-modules-amd']
   }))
   .run(commonTasks.minifyJs());
-gfd.appFiles()
+g.appFiles()
   .withExtension('js')
   .match(/^nobabel\//)
   .run(commonTasks.minifyJs());
-gfd.appFiles()
+g.appFiles()
   .withExtension('sass', 'scss')
   .run(commonTasks.compileSass())
   .run(commonTasks.autoprefixer())
   .run(commonTasks.minifyCss());
-gfd.appFiles()
+g.appFiles()
   .withExtension('css')
   .run(commonTasks.autoprefixer())
   .run(commonTasks.minifyCss());
-gfd.appFiles()
+g.appFiles()
   .withExtension('html')
   .run(commonTasks.replace('{{_!_version_!_}}', pkg.version))
   .run(commonTasks.minifyHtml())
-gfd.appFiles()
+g.appFiles()
   .withExtension('jpeg', 'jpg', 'png', 'svg')
   .run(commonTasks.imagemin());
-gfd.bowerFiles()
+g.bowerFiles()
   .inFolder('moment/min')
   .withName('moment.min.js')
   .run(commonTasks.minifyJs())
   .put('vendor/moment');
 
-gulp.task('build', gfd.buildTask());
+gulp.task('build', g.buildTask());
 gulp.task('default', gulp.series('build'));
 gulp.task('serve', gulp.series('build', serve));

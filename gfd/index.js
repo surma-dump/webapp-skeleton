@@ -3,6 +3,13 @@ var through = require('through2');
 var merge = require('merge-stream');
 var path = require('path');
 
+var defaultConfig = {
+  appDir: 'app',
+  destDir: 'dist',
+  moduleDir: 'node_modules',
+  bowerDir: 'bower_components'
+};
+
 function StreamWrapper(path) {
   this.stream = gulp.src(path + '/**/*');
 }
@@ -72,47 +79,48 @@ var eatStream = through.obj(function(file, enc, cb) {
 });
 
 StreamWrapper.prototype.put = function(dest) {
-  var newDest = path.join(config.destDir, dest);
+  var newDest = path.join(this.config.destDir, dest);
   this.stream = this.stream
     .pipe(gulp.dest(newDest))
     .pipe(eatStream);
   return this;
 };
 
-var config = {
-  appDir: 'app',
-  destDir: 'dist',
-  moduleDir: 'node_modules',
-  bowerDir: 'bower_components'
-};
 
-module.exports = {
-  config: function(cfg) {
-    config = Object.assign(config, cfg);
-    return config;
-  },
-  pipes: [],
-  appFiles: function() {
-    var newStream = new StreamWrapper(config.appDir);
-    this.pipes.push(newStream);
-    return newStream;
-  },
-  moduleFiles: function() {
-    var newStream = new StreamWrapper(config.moduleDir);
-    this.pipes.push(newStream);
-    return newStream;
-  },
-  bowerFiles: function() {
-    var newStream = new StreamWrapper(config.bowerDir);
-    this.pipes.push(newStream);
-    return newStream;
-  },
-  buildTask: function() {
-    return function() {
-      var pipes = this.pipes.map(function(task) {
-        return task.stream.pipe(gulp.dest(config.destDir));
-      }.bind(this));
-      return merge(pipes);
-    }.bind(this);
-  }
+module.exports = function(cfg) {
+  var config = Object.assign({}, defaultConfig, cfg);
+
+  return {
+    config: function(cfg) {
+      config = Object.assign(config, cfg);
+      return config;
+    },
+    pipes: [],
+    appFiles: function() {
+      var newStream = new StreamWrapper(config.appDir);
+      newStream.config = config;
+      this.pipes.push(newStream);
+      return newStream;
+    },
+    moduleFiles: function() {
+      var newStream = new StreamWrapper(config.moduleDir);
+      newStream.config = config;
+      this.pipes.push(newStream);
+      return newStream;
+    },
+    bowerFiles: function() {
+      var newStream = new StreamWrapper(config.bowerDir);
+      newStream.config = config;
+      this.pipes.push(newStream);
+      return newStream;
+    },
+    buildTask: function() {
+      return function() {
+        var pipes = this.pipes.map(function(task) {
+          return task.stream.pipe(gulp.dest(config.destDir));
+        }.bind(this));
+        return merge(pipes);
+      }.bind(this);
+    }
+  };
 };
