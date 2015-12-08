@@ -4,10 +4,7 @@ var merge = require('merge-stream');
 var path = require('path');
 
 var defaultConfig = {
-  appDir: 'app',
-  destDir: 'dist',
-  moduleDir: 'node_modules',
-  bowerDir: 'bower_components'
+  destDir: 'dist'
 };
 
 function StreamWrapper(path) {
@@ -96,20 +93,8 @@ module.exports = function(cfg) {
       return config;
     },
     pipes: [],
-    appFiles: function() {
-      var newStream = new StreamWrapper(config.appDir);
-      newStream.config = config;
-      this.pipes.push(newStream);
-      return newStream;
-    },
-    moduleFiles: function() {
-      var newStream = new StreamWrapper(config.moduleDir);
-      newStream.config = config;
-      this.pipes.push(newStream);
-      return newStream;
-    },
-    bowerFiles: function() {
-      var newStream = new StreamWrapper(config.bowerDir);
+    filesIn: function(folder) {
+      var newStream = new StreamWrapper(folder);
       newStream.config = config;
       this.pipes.push(newStream);
       return newStream;

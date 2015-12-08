@@ -5,15 +5,8 @@ import commonTasks from './gfd/common-tasks';
 import serve from './gulp/serve';
 
 var g = gfd();
-// This call just shows off the default values
-g.config({
-  appDir: 'app',
-  destDir: 'dist',
-  moduleDir: 'node_modules',
-  bowerDir: 'bower_components'
-});
 
-g.appFiles()
+g.filesIn('app')
   .withExtension('js')
   .noMatch(/^nobabel\//)
   .run(commonTasks.babel({
@@ -21,27 +14,27 @@ g.appFiles()
     plugins: ['transform-es2015-modules-amd']
   }))
   .run(commonTasks.minifyJs());
-g.appFiles()
+g.filesIn('app')
   .withExtension('js')
   .match(/^nobabel\//)
   .run(commonTasks.minifyJs());
-g.appFiles()
+g.filesIn('app')
   .withExtension('sass', 'scss')
   .run(commonTasks.compileSass())
   .run(commonTasks.autoprefixer())
   .run(commonTasks.minifyCss());
-g.appFiles()
+g.filesIn('app')
   .withExtension('css')
   .run(commonTasks.autoprefixer())
   .run(commonTasks.minifyCss());
-g.appFiles()
+g.filesIn('app')
   .withExtension('html')
   .run(commonTasks.replace('{{_!_version_!_}}', pkg.version))
   .run(commonTasks.minifyHtml())
-g.appFiles()
+g.filesIn('app')
   .withExtension('jpeg', 'jpg', 'png', 'svg')
   .run(commonTasks.imagemin());
-g.bowerFiles()
+g.filesIn('bower_components')
   .inFolder('moment/min')
   .withName('moment.min.js')
   .run(commonTasks.minifyJs())
