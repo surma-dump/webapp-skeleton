@@ -1,10 +1,10 @@
 import gulp from 'gulp';
-import gfd from './gfd';
+import gtb from './gtb';
 import pkg from './package.json';
-import commonTasks from './gfd/common-tasks';
+import commonTasks from './gtb/common-tasks';
 import serve from './gulp/serve';
 
-var g = gfd();
+var g = gtb();
 
 g.filesIn('app')
   .withExtension('js')

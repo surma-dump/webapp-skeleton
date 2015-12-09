@@ -1,7 +1,7 @@
 {
-  "name": "gfd",
+  "name": "gtb",
   "version": "0.0.0",
-  "description": "Gulp for Dummies",
+  "description": "Gulp Task Builder",
   "main": "index.js",
   "dependencies": {
     "gulp": "^3.9.0",
