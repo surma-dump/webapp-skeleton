@@ -8,7 +8,7 @@ var g = gfd();
 
 g.filesIn('app')
   .withExtension('js')
-  .noMatch(/^nobabel\//)
+  .excluding(/^nobabel\//)
   .run(commonTasks.babel({
     presets: ['es2015'],
     plugins: ['transform-es2015-modules-amd']
@@ -16,7 +16,7 @@ g.filesIn('app')
   .run(commonTasks.minifyJs());
 g.filesIn('app')
   .withExtension('js')
-  .match(/^nobabel\//)
+  .matching(/^nobabel\//)
   .run(commonTasks.minifyJs());
 g.filesIn('app')
   .withExtension('sass', 'scss')

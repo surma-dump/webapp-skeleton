@@ -39,13 +39,13 @@ StreamWrapper.prototype.withName = function(name) {
   return this;
 };
 
-StreamWrapper.prototype.match = function(regexp) {
+StreamWrapper.prototype.matching = function(regexp) {
   return this.filter(function(file) {
     return regexp.test(file.relative);
   });
 };
 
-StreamWrapper.prototype.noMatch = function(regexp) {
+StreamWrapper.prototype.excluding = function(regexp) {
   return this.filter(function(file) {
     return !regexp.test(file.relative);
   });
