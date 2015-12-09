@@ -2,7 +2,7 @@ import gulp from 'gulp';
 import gtb from './gtb';
 import pkg from './package.json';
 import commonTasks from './gtb/common-tasks';
-import serve from './gulp/serve';
+import serve from './gulp-tasks/serve';
 
 var g = gtb();
 
