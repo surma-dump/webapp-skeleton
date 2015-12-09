@@ -12,39 +12,57 @@ var streamCombiner = require('stream-combiner');
 
 module.exports = {
   compileSass: function(opts) {
-    return sass(opts);
+    return function() {
+      return sass(opts);
+    };
   },
   autoprefixer: function(opts) {
-    return autoprefixer(opts);
+    return function() {
+      return autoprefixer(opts);
+    };
   },
   minifyCss: function(opts) {
-    return minifyCss(opts);
+    return function() {
+      return minifyCss(opts);
+    };
   },
   minifyJs: function(opts) {
-    return uglify(opts);
+    return function() {
+      return uglify(opts);
+    };
   },
   minifyHtml: function(opts) {
     if(typeof opts === 'undefined') {
       opts = {html: {}, inline: {}};
     }
-    return streamCombiner(
-      minifyHtml(opts.html || {}),
-      minifyInline(opts.inline || {})
-    );
+    return function() {
+      return streamCombiner(
+        minifyHtml(opts.html || {}),
+        minifyInline(opts.inline || {})
+      );
+    };
   },
   imagemin: function(opts) {
-    return imagemin(opts);
+    return function() {
+      return imagemin(opts);
+    };
   },
   babel: function(opts) {
-    return babel(opts);
+    return function() {
+      return babel(opts);
+    };
   },
   replace: function(needle, haystack) {
-    return replace(needle, haystack);
+    return function() {
+      return replace(needle, haystack);
+    };
   },
   log: function(prefix) {
-    return through.obj(function(file, enc, cb) {
-      console.log(prefix+':', file.relative, '(' + file.path + ')');
-      cb(null, file);
-    });
+    return function() {
+      return through.obj(function(file, enc, cb) {
+        console.log(prefix+':', file.relative, '(' + file.path + ')');
+        cb(null, file);
+      });
+    };
   }
 };

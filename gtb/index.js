@@ -7,51 +7,58 @@ var defaultConfig = {
   destDir: 'dist'
 };
 
-function StreamWrapper(path) {
-  this.stream = gulp.src(path + '/**/*');
+function FileOperationCollection(path) {
+  this.steps = [function() {
+    return gulp.src(path + '/**/*', {dot: true});
+  }];
 }
 
-StreamWrapper.prototype.filter = function(filterFunc) {
-  this.stream = this.stream.pipe(through.obj(function(file, enc, cb) {
-    if(filterFunc.call(this, file)) {
-      cb(null, file);
-      return;
-    }
-    cb(null);
-  }.bind(this)));
+FileOperationCollection.prototype.filter = function(filterFunc) {
+  this.steps.push(function(stream) {
+    return stream.pipe(through.obj(function(file, enc, cb) {
+      if(filterFunc.call(this, file)) {
+        cb(null, file);
+        return;
+      }
+      cb(null);
+    }.bind(this)));
+  });
   return this;
 };
 
-StreamWrapper.prototype.withExtension = function() {
-  var exts = Array.prototype.slice.call(arguments);
+FileOperationCollection.prototype.withExtension = function() {
+  var exts = Array.prototype.map.call(arguments, function(ext) {
+    return '.' + ext;
+  });
+
   return this.filter(function(file) {
     var fileExt = path.extname(file.path)
     return exts.map(function(ext) {
-      return fileExt === '.' + ext;
+      return fileExt === ext;
     }).indexOf(true) !== -1;
   });
 };
 
-StreamWrapper.prototype.withName = function(name) {
+FileOperationCollection.prototype.withName = function(name) {
   this.filter(function(file) {
     return path.basename(file.path) === name;
   });
   return this;
 };
 
-StreamWrapper.prototype.matching = function(regexp) {
+FileOperationCollection.prototype.matching = function(regexp) {
   return this.filter(function(file) {
     return regexp.test(file.relative);
   });
 };
 
-StreamWrapper.prototype.excluding = function(regexp) {
+FileOperationCollection.prototype.excluding = function(regexp) {
   return this.filter(function(file) {
     return !regexp.test(file.relative);
   });
 };
 
-StreamWrapper.prototype.inFolder = function(name) {
+FileOperationCollection.prototype.inFolder = function(name) {
   return this.filter(function(file) {
     var doesMatch = file.relative.startsWith(name);
     if(doesMatch) {
@@ -61,25 +68,37 @@ StreamWrapper.prototype.inFolder = function(name) {
   });
 };
 
-StreamWrapper.prototype.run = function(task, opts) {
+FileOperationCollection.prototype.run = function(taskFactory, opts) {
   opts = opts || {};
   if(opts.skip) {
     return this;
   }
 
-  this.stream = this.stream.pipe(task);
+  this.steps.push(function(stream) {
+    return stream.pipe(taskFactory());
+  });
   return this;
 };
 
-var eatStream = through.obj(function(file, enc, cb) {
-  cb(null);
-});
+FileOperationCollection.prototype.runGulp = function(gulpTaskFactory, gulpTaskOpts, opts) {
+  return this.run(function() {
+    return gulpTaskFactory(gulpTaskOpts);
+  }, opts);
+};
 
-StreamWrapper.prototype.put = function(dest) {
+var eatStream = function() {
+  return through.obj(function(file, enc, cb) {
+    cb(null);
+  });
+};
+
+FileOperationCollection.prototype.put = function(dest) {
   var newDest = path.join(this.config.destDir, dest);
-  this.stream = this.stream
-    .pipe(gulp.dest(newDest))
-    .pipe(eatStream);
+  this.steps.push(function(stream) {
+    return stream
+      .pipe(gulp.dest(newDest))
+      .pipe(eatStream());
+  });
   return this;
 };
 
@@ -94,17 +113,19 @@ module.exports = function(cfg) {
     },
     pipes: [],
     filesIn: function(folder) {
-      var newStream = new StreamWrapper(folder);
+      var newStream = new FileOperationCollection(folder);
       newStream.config = config;
       this.pipes.push(newStream);
       return newStream;
     },
     buildTask: function() {
       return function() {
-        var pipes = this.pipes.map(function(task) {
-          return task.stream.pipe(gulp.dest(config.destDir));
-        }.bind(this));
-        return merge(pipes);
+        var streams = this.pipes.map(function(task) {
+          return task.steps.reduce(function(stream, step) {
+            return step(stream);
+          }, null).pipe(gulp.dest(config.destDir));
+        });
+        return merge(streams);
       }.bind(this);
     }
   };
