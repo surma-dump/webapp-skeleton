@@ -118,7 +118,7 @@ module.exports = function(cfg) {
       this.pipes.push(newStream);
       return newStream;
     },
-    buildTask: function() {
+    build: function() {
       return function() {
         var streams = this.pipes.map(function(task) {
           return task.steps.reduce(function(stream, step) {

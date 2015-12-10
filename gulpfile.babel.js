@@ -4,9 +4,15 @@ import pkg from './package.json';
 import commonTasks from './gtb/common-tasks';
 import serve from './gulp-tasks/serve';
 
-var g = gtb();
+var task = gtb();
+// gtb implicitly outputs all the files to `dest` unless
+// they have already been written with `put()`.
+// Default value:
+task.config({
+  dest: 'dist'
+});
 
-g.filesIn('app')
+task.filesIn('app')
   .withExtension('js')
   .excluding(/^nobabel\//)
   .run(commonTasks.babel({
@@ -14,32 +20,32 @@ g.filesIn('app')
     plugins: ['transform-es2015-modules-amd']
   }))
   .run(commonTasks.minifyJs());
-g.filesIn('app')
+task.filesIn('app')
   .withExtension('js')
   .matching(/^nobabel\//)
   .run(commonTasks.minifyJs());
-g.filesIn('app')
+task.filesIn('app')
   .withExtension('sass', 'scss')
   .run(commonTasks.compileSass())
   .run(commonTasks.autoprefixer())
   .run(commonTasks.minifyCss());
-g.filesIn('app')
+task.filesIn('app')
   .withExtension('css')
   .run(commonTasks.autoprefixer())
   .run(commonTasks.minifyCss());
-g.filesIn('app')
+task.filesIn('app')
   .withExtension('html')
   .run(commonTasks.replace('{{_!_version_!_}}', pkg.version))
   .run(commonTasks.minifyHtml())
-g.filesIn('app')
+task.filesIn('app')
   .withExtension('jpeg', 'jpg', 'png', 'svg')
   .run(commonTasks.imagemin());
-g.filesIn('bower_components')
+task.filesIn('bower_components')
   .inFolder('moment/min')
   .withName('moment.min.js')
   .run(commonTasks.minifyJs())
   .put('vendor/moment');
 
-gulp.task('build', g.buildTask());
+gulp.task('build', task.build());
 gulp.task('default', gulp.series('build'));
 gulp.task('serve', gulp.series('build', serve));
