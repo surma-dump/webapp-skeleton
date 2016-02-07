@@ -1,5 +1,5 @@
-var minifyCss = require('gulp-minify-css');
-var minifyHtml = require('gulp-minify-html');
+var minifyCss = require('gulp-cssnano');
+var minifyHtml = require('gulp-htmlmin');
 var minifyInline = require('gulp-minify-inline');
 var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
@@ -33,11 +33,19 @@ module.exports = {
   },
   minifyHtml: function(opts) {
     if(typeof opts === 'undefined') {
-      opts = {html: {}, inline: {}};
+      opts = {};
     }
     return function() {
       return streamCombiner(
-        minifyHtml(opts.html || {}),
+        minifyHtml(opts.html || {
+          minifyCSS: true,
+          minifyJS: true,
+          removeScriptTypeAttributes: true,
+          collapseBooleanAttributes: true,
+          removeTagWhitespace: true,
+          collapseWhitespace: true,
+          removeComments: true
+        }),
         minifyInline(opts.inline || {})
       );
     };
